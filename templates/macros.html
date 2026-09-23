@@ -1,0 +1,17 @@
+{% macro card(r) %}
+<div class="card">
+  <a href="/rooms/{{ r.id }}">
+    {% if r.image %}<img src="/uploads/{{ r.image }}" alt="{{ r.name }}">{% else %}<div class="noimg">No photo yet</div>{% endif %}
+    <div class="cardbody">
+      <div class="price">R{{ '%.0f'|format(r.monthly_rent) }} <span>/ month</span></div>
+      <div class="title">{{ r.name }}</div>
+      <div class="loc">{{ r.suburb }}, {{ r.city }}</div>
+      <div class="meta">
+        <span>{{ r.room_type }}</span>
+        {% if r.is_furnished %}<span>Furnished</span>{% endif %}
+        <span class="avail">{{ r.status.title() }}</span>
+      </div>
+    </div>
+  </a>
+</div>
+{% endmacro %}

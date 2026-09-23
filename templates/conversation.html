@@ -1,0 +1,16 @@
+{% extends "base.html" %}{% block title %}Conversation{% endblock %}
+{% block content %}
+<h1>Conversation about <a href="/rooms/{{ conv.room_id }}">{{ conv.room_name }}</a></h1>
+<div class="thread">
+{% for m in msgs %}
+  <div class="bubble {{ 'me' if m.sender_id == user.id else '' }}">
+    <div class="bmeta">{{ m.sender_name }} · {{ m.created_at[:16].replace('T',' ') }}</div>
+    <div>{{ m.body }}</div>
+  </div>
+{% endfor %}
+</div>
+<form method="post" class="composer">
+  <input name="body" placeholder="Type a message…" required autocomplete="off">
+  <button class="btn" type="submit">Send</button>
+</form>
+{% endblock %}

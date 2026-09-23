@@ -1,0 +1,54 @@
+{% extends "base.html" %}{% import "macros.html" as ui %}
+{% block title %}Admin{% endblock %}
+{% block content %}
+<h1>Administration</h1>
+<div class="statgrid">
+  <div class="stat"><b>{{ stats.users }}</b><span>Users</span></div>
+  <div class="stat"><b>{{ stats.tenants }}</b><span>Tenants</span></div>
+  <div class="stat"><b>{{ stats.landlords }}</b><span>Landlords</span></div>
+  <div class="stat"><b>{{ stats.properties }}</b><span>Properties</span></div>
+  <div class="stat"><b>{{ stats.rooms }}</b><span>Rooms</span></div>
+  <div class="stat"><b>{{ stats.available }}</b><span>Available</span></div>
+  <div class="stat"><b>{{ stats.rented }}</b><span>Rented</span></div>
+  <div class="stat"><b>{{ stats.pending }}</b><span>Pending review</span></div>
+  <div class="stat"><b>{{ stats.open_reports }}</b><span>Open reports</span></div>
+  <div class="stat"><b>{{ stats.viewings }}</b><span>Viewings</span></div>
+</div>
+<h2>Listings pending review</h2>
+{% if pending %}
+<div class="grid">{% for r in pending %}
+<div class="card">{{ ui.card(r) }}
+  <div class="cardactions">
+    <form method="post" action="/admin/rooms/{{ r.id }}/action"><button class="btn small" name="action" value="approve">Approve</button></form>
+    <form method="post" action="/admin/rooms/{{ r.id }}/action"><button class="btn small ghost" name="action" value="reject">Reject</button></form>
+    <form method="post" action="/admin/rooms/{{ r.id }}/action"><button class="btn small danger" name="action" value="suspend">Suspend</button></form>
+  </div>
+  <p class="muted small">by {{ r.landlord_name }}</p>
+</div>
+{% endfor %}</div>
+{% else %}<p class="empty">No listings pending review.</p>{% endif %}
+<h2>Open reports</h2>
+{% if reports %}
+<table class="table">
+  <tr><th>Room</th><th>Reason</th><th>Reported by</th><th></th></tr>
+  {% for r in reports %}<tr>
+    <td>{{ r.room_name }}</td><td>{{ r.reason }}</td><td>{{ r.reporter or '—' }}</td>
+    <td><form method="post" action="/admin/reports/{{ r.id }}/resolve" style="display:inline">
+      <button class="btn small" name="action" value="resolve">Dismiss</button>
+      <button class="btn small danger" name="action" value="suspend">Suspend listing</button></form></td>
+  </tr>{% endfor %}
+</table>
+{% else %}<p class="empty">No open reports.</p>{% endif %}
+<h2>Users</h2>
+<table class="table">
+  <tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th></th></tr>
+  {% for u in users %}<tr>
+    <td>{{ u.name }}</td><td>{{ u.email }}</td><td>{{ u.role }}</td><td>{{ u.status }}</td>
+    <td>{% if u.role != 'admin' %}
+      <form method="post" action="/admin/users/{{ u.id }}/action" style="display:inline">
+      {% if u.status == 'active' %}<button class="btn small danger" name="action" value="suspend">Suspend</button>
+      {% else %}<button class="btn small" name="action" value="activate">Activate</button>{% endif %}
+      </form>{% endif %}</td>
+  </tr>{% endfor %}
+</table>
+{% endblock %}

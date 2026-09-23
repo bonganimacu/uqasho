@@ -1,0 +1,16 @@
+{% extends "base.html" %}{% block title %}Messages{% endblock %}
+{% block content %}
+<h1>Messages</h1>
+{% if convs %}
+<div class="convlist">
+{% for c in convs %}
+  <a class="conv" href="/messages/{{ c.id }}">
+    <div><b>{{ c.landlord_name if user.id == c.tenant_id else c.tenant_name }}</b>
+      <span class="muted">re: {{ c.room_name }}</span></div>
+    <div class="preview">{{ c.last_msg or '' }}</div>
+    {% if c.unread %}<span class="pill">{{ c.unread }}</span>{% endif %}
+  </a>
+{% endfor %}
+</div>
+{% else %}<p class="empty">No conversations yet. Find a room and message the landlord.</p>{% endif %}
+{% endblock %}

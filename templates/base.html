@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Room Rental Platform — South Africa{% endblock %}</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap nav">
+    <a class="logo" href="/">Room<span>Rentals</span><small>.co.za</small></a>
+    <form class="navsearch" action="/search" method="get">
+      <input name="q" placeholder="Search suburb or city… e.g. Observatory" value="{{ q|default('') }}">
+      <button type="submit">Search</button>
+    </form>
+    <nav class="menu">
+      <a href="/search">Browse rooms</a>
+      {% if user %}
+        <a href="/notifications">🔔{% if notif_unread %}<b class="pill">{{ notif_unread }}</b>{% endif %}</a>
+        <a href="/messages">Messages{% if unread %}<b class="pill">{{ unread }}</b>{% endif %}</a>
+        {% if user.role == 'tenant' %}
+          <a href="/favourites">Saved</a><a href="/viewings">Viewings</a>
+        {% endif %}
+        {% if user.role == 'landlord' %}
+          <a href="/l/dashboard">Dashboard</a>
+        {% endif %}
+        {% if user.role == 'admin' %}<a href="/admin">Admin</a>{% endif %}
+        <a href="/profile">{{ user.name }}</a>
+        <a class="btn ghost" href="/logout">Log out</a>
+      {% else %}
+        <a href="/login">Log in</a>
+        <a class="btn" href="/register">Sign up free</a>
+      {% endif %}
+    </nav>
+  </div>
+</header>
+{% if msg %}<div class="flash">{{ msg.replace('+',' ') }}</div>{% endif %}
+<main class="wrap">
+{% block content %}{% endblock %}
+</main>
+<footer class="footer">
+  <div class="wrap">
+    <p>Browse freely. Register when you need to interact. · Room Rentals Platform — South Africa · R (ZAR) pricing · © {{ year }}</p>
+  </div>
+</footer>
+</body>
+</html>

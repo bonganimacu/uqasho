@@ -1,0 +1,10 @@
+{% extends "base.html" %}{% import "macros.html" as ui %}
+{% block title %}Saved rooms{% endblock %}
+{% block content %}
+<h1>Saved rooms</h1>
+{% if cards %}
+<div class="grid">{% for r in cards %}{{ ui.card(r) }}
+  <form method="post" action="/favourites/{{ r.id }}/delete"><button class="btn small ghost">Remove</button></form>
+{% endfor %}</div>
+{% else %}<p class="empty">You haven't saved any rooms yet. Tap ♡ on any listing to save it here.</p>{% endif %}
+{% endblock %}

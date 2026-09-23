@@ -1,0 +1,27 @@
+{% extends "base.html" %}{% import "macros.html" as ui %}
+{% block content %}
+<section class="hero">
+  <h1>Find your next room, anywhere in South Africa</h1>
+  <p>Search thousands of rooms in Johannesburg, Cape Town, Durban, Pretoria and beyond — no account needed.</p>
+  <form class="bigsearch" action="/search" method="get">
+    <input name="q" placeholder="Suburb, city or area…">
+    <select name="province"><option value="">All provinces</option>
+      {% for p in provinces %}<option>{{ p }}</option>{% endfor %}</select>
+    <select name="room_type"><option value="">Any room type</option>
+      {% for t in room_types %}<option>{{ t }}</option>{% endfor %}</select>
+    <button class="btn big" type="submit">Find a room</button>
+  </form>
+  <p class="hint">Popular: <a href="/search?q=Observatory">Observatory</a> · <a href="/search?q=Sandton">Sandton</a> · <a href="/search?q=Umhlanga">Umhlanga</a> · <a href="/search?q=Soshanguve">Soshanguve</a></p>
+</section>
+<section>
+  <h2>Latest rooms</h2>
+  {% if cards %}
+  <div class="grid">{% for r in cards %}{{ ui.card(r) }}{% endfor %}</div>
+  {% else %}<p class="empty">No rooms published yet. Landlords: <a href="/register">list your first room</a>.</p>{% endif %}
+</section>
+<section class="landlordcta">
+  <div><h2>Own a property with rooms to rent?</h2>
+  <p>Create listings with photos, pricing, deposits and amenities — published to thousands of seekers.</p></div>
+  <a class="btn big" href="/register">List your rooms — free</a>
+</section>
+{% endblock %}

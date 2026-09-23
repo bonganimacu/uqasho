@@ -1,0 +1,17 @@
+{% extends "base.html" %}{% block title %}Log in{% endblock %}
+{% block content %}
+<div class="authbox authbox-premium">
+  <div class="authmark">RR</div>
+  <p class="eyebrow">RoomRentals account</p>
+  <h1>Welcome back</h1>
+  <p class="authlead">Pick up where you left off and continue your search.</p>
+  <form method="post" action="/login">
+    <input type="hidden" name="next" value="{{ next }}">
+    <label>Email<input name="email" type="email" placeholder="you@example.co.za" required></label>
+    <label>Password<input name="password" type="password" placeholder="Your password" required></label>
+    <button class="btn big" type="submit">Log in securely</button>
+  </form>
+  <p class="authfoot">New here? <a href="/register">Create a free account</a></p>
+  <p class="authprivacy">Your account lets you save rooms, message landlords, and request viewings.</p>
+</div>
+{% endblock %}

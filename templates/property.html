@@ -1,0 +1,36 @@
+{% extends "base.html" %}{% import "macros.html" as ui %}
+{% block title %}{{ p.name }}{% endblock %}
+{% block content %}
+<h1>{{ p.name }}</h1>
+<p class="muted">{{ p.property_type }} · {{ p.suburb }}, {{ p.city }}, {{ p.province }}</p>
+{% if p.general_location %}<p>📍 {{ p.general_location }}</p>{% endif %}
+<p>{{ p.description }}</p>
+<p><a class="btn" href="/l/properties/{{ p.id }}/rooms/new">+ Add room</a>
+<a class="btn ghost" href="/l/dashboard">← Dashboard</a></p>
+<h2>Rooms</h2>
+{% if rooms %}
+<div class="grid">{% for r in rooms %}
+<div class="card">
+  <a href="/rooms/{{ r.id }}">{% if r.image %}<img src="/uploads/{{ r.image }}">{% else %}<div class="noimg">No photo</div>{% endif %}
+  <div class="cardbody"><div class="price">R{{ '%.0f'|format(r.monthly_rent) }} <span>/ month</span></div>
+  <div class="title">{{ r.name }}</div>
+  <span class="status s-{{ r.status|lower }}">{{ r.status.replace('_',' ') }}</span></div></a>
+  <div class="cardactions">
+  {% if r.status in ['DRAFT','APPROVED','REJECTED'] %}
+    <form method="post" action="/l/rooms/{{ r.id }}/action"><button class="btn small" name="action" value="submit">Submit for review</button></form>
+  {% endif %}
+  {% if r.status in ['APPROVED','DRAFT','PENDING_REVIEW'] %}
+    <form method="post" action="/l/rooms/{{ r.id }}/action"><button class="btn small" name="action" value="publish">Publish now</button></form>
+  {% endif %}
+  {% if r.status in ['PUBLISHED','AVAILABLE'] %}
+    <form method="post" action="/l/rooms/{{ r.id }}/action"><button class="btn small ghost" name="action" value="unpublish">Unpublish</button></form>
+    <form method="post" action="/l/rooms/{{ r.id }}/action"><button class="btn small" name="action" value="rented">Mark rented</button></form>
+  {% endif %}
+  {% if r.status in ['RENTED','RESERVED','UNAVAILABLE'] %}
+    <form method="post" action="/l/rooms/{{ r.id }}/action"><button class="btn small" name="action" value="available">Re-list</button></form>
+  {% endif %}
+  </div>
+</div>
+{% endfor %}</div>
+{% else %}<p class="empty">No rooms yet — add your first room.</p>{% endif %}
+{% endblock %}

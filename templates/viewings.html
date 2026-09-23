@@ -1,0 +1,17 @@
+{% extends "base.html" %}{% block title %}Viewing requests{% endblock %}
+{% block content %}
+<h1>{{ 'Viewing requests received' if mode == 'landlord' else 'My viewing requests' }}</h1>
+{% if rows %}
+<table class="table">
+  <tr><th>Room</th><th>{{ 'Tenant' if mode == 'landlord' else 'Location' }}</th><th>Preferred date</th><th>Status</th>
+  {% if mode == 'tenant' and rows %}<th>Address</th>{% endif %}</tr>
+  {% for v in rows %}<tr>
+    <td>{{ v.room_name }}</td>
+    <td>{{ v.tenant_name if mode == 'landlord' else (v.suburb ~ ', ' ~ v.city) }}</td>
+    <td>{{ v.preferred_date }} {{ v.preferred_time }}</td>
+    <td><span class="status s-{{ v.status|lower }}">{{ v.status }}</span></td>
+    {% if mode == 'tenant' %}<td>{{ v.address_private if v.status == 'ACCEPTED' else 'Shared when accepted' }}</td>{% endif %}
+  </tr>{% endfor %}
+</table>
+{% else %}<p class="empty">No viewing requests yet.</p>{% endif %}
+{% endblock %}

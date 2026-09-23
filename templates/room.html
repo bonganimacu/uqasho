@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}{{ room.name }} — {{ room.suburb }}, {{ room.city }}{% endblock %}
+{% block content %}
+<div class="crumbs"><a href="/search?q={{ room.city }}">{{ room.city }}</a> › <a href="/search?q={{ room.suburb }}">{{ room.suburb }}</a></div>
+<div class="listing">
+  <div class="gallery">
+    {% for img in room.images %}<img src="/uploads/{{ img }}" alt="{{ room.name }} photo">{% else %}<div class="noimg big">No photos yet</div>{% endfor %}
+  </div>
+  <div class="listinginfo">
+    <h1>{{ room.name }}</h1>
+    <div class="loc">{{ room.suburb }}, {{ room.city }} · {{ room.province }}</div>
+    <div class="bigprice">R{{ '%.0f'|format(room.monthly_rent) }} <span>/ month</span></div>
+    <table class="facts">
+      <tr><td>Deposit</td><td>R{{ '%.0f'|format(room.deposit) }}</td></tr>
+      {% if room.additional_fees %}<tr><td>Additional fees</td><td>R{{ '%.0f'|format(room.additional_fees) }}</td></tr>{% endif %}
+      <tr><td>Available from</td><td>{{ room.available_from or 'Immediately' }}</td></tr>
+      <tr><td>Room type</td><td>{{ room.room_type }}{% if room.is_shared %} · Shared{% endif %}</td></tr>
+      <tr><td>Furnished</td><td>{{ 'Yes' if room.is_furnished else 'No' }}</td></tr>
+      <tr><td>Bathroom</td><td>{{ room.bathroom }}</td></tr>
+      <tr><td>Max occupants</td><td>{{ room.occupants }}</td></tr>
+    </table>
+    {% if room.amenities %}
+    <div class="amenities">{% for a in room.amenities.split(',') %}<span class="tag">{{ a.strip() }}</span>{% endfor %}</div>
+    {% endif %}
+    <p class="desc">{{ room.description }}</p>
+    {% if room.rules %}<p class="rules"><b>House rules:</b> {{ room.rules }}</p>{% endif %}
+    <div class="propertybox">
+      <h3>{{ room.prop_name }}</h3>
+      <p>{{ room.property_type }} · {{ room.general_location }}</p>
+      <p class="muted">{{ room.prop_description }}</p>
+    </div>
+    <div class="landlordbox">
+      <b>Listed by {{ room.landlord_name }}</b>
+      <span class="muted">Member since {{ room.landlord_since[:10] }}</span>
+    </div>
+    <div class="actions">
+      {% if user %}
+        {% if conv_id %}
+          <a class="btn big" href="/messages/{{ conv_id }}">Open conversation</a>
+        {% else %}
+          <form method="post" action="/rooms/{{ room.id }}/messages/start">
+            <textarea name="body" rows="2" placeholder="Hi, is this room still available?" required></textarea>
+            <button class="btn big" type="submit">Message landlord</button>
+          </form>
+        {% endif %}
+        {% if user.role in ['tenant','admin'] %}
+        <form method="post" action="/rooms/{{ room.id }}/viewings" class="viewingform">
+          <b>Request a viewing</b>
+          <input type="date" name="date" required>
+          <input type="time" name="time" required>
+          <input name="message" placeholder="Optional message">
+          <button class="btn" type="submit">Request viewing</button>
+        </form>
+        <form method="post" action="/rooms/{{ room.id }}/favourite">
+          <button class="btn ghost" type="submit">{{ '♥ Saved' if fav else '♡ Save room' }}</button>
+        </form>
+        {% endif %}
+        <details class="reportbox"><summary>Report this listing</summary>
+          <form method="post" action="/rooms/{{ room.id }}/report">
+            <select name="reason">{% for r in reasons %}<option>{{ r }}</option>{% endfor %}</select>
+            <input name="details" placeholder="Details (optional)">
+            <button class="btn danger" type="submit">Submit report</button>
+          </form>
+        </details>
+      {% else %}
+        <p class="gate"><a class="btn big" href="/login?next=/rooms/{{ room.id }}">Log in to message the landlord</a>
+        <a class="btn ghost" href="/register?next=/rooms/{{ room.id }}">Create a free account</a></p>
+        <p class="muted">You can browse freely — an account is only needed to contact landlords, request viewings or save rooms.</p>
+      {% endif %}
+      <button class="btn ghost" onclick="navigator.clipboard.writeText(location.href);this.textContent='Link copied!'">Share listing</button>
+    </div>
+  </div>
+</div>
+{% endblock %}

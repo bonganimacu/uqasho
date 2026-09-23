@@ -1,0 +1,16 @@
+{% extends "base.html" %}{% block title %}Sign up{% endblock %}
+{% block content %}
+<div class="authbox">
+  <h1>Create your free account</h1>
+  <form method="post" action="/register">
+    <label>Full name <input name="name" required></label>
+    <label>Email <input name="email" type="email" required></label>
+    <label>Password (min 8 characters) <input name="password" type="password" minlength="8" required></label>
+    <label>I am a…
+      <select name="role"><option value="tenant">Tenant — looking for a room</option>
+      <option value="landlord">Landlord — renting out rooms</option></select></label>
+    <button class="btn big" type="submit">Sign up</button>
+  </form>
+  <p>Already registered? <a href="/login">Log in</a></p>
+</div>
+{% endblock %}

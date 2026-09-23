@@ -1,0 +1,17 @@
+{% extends "base.html" %}{% block title %}Add property{% endblock %}
+{% block content %}
+<h1>Add a property</h1>
+<form class="formcard" method="post">
+  <label>Property name <input name="name" required placeholder="e.g. Observatory Family Home"></label>
+  <label>Property type <select name="property_type">{% for t in prop_types %}<option>{{ t }}</option>{% endfor %}</select></label>
+  <label>Province <select name="province">{% for p in provinces %}<option>{{ p }}</option>{% endfor %}</select></label>
+  <div class="row">
+    <label>City <input name="city" required placeholder="Cape Town"></label>
+    <label>Suburb <input name="suburb" required placeholder="Observatory"></label>
+  </div>
+  <label>General location (public) <input name="general_location" placeholder="5 min walk to taxi rank; near UCT"></label>
+  <label>Street address (kept private) <input name="address_private" placeholder="10 Anson Road"></label>
+  <label>Description <textarea name="description" rows="3"></textarea></label>
+  <button class="btn big" type="submit">Save property</button>
+</form>
+{% endblock %}

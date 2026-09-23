@@ -1,0 +1,30 @@
+{% extends "base.html" %}{% import "macros.html" as ui %}
+{% block title %}Search rooms — Room Rentals{% endblock %}
+{% block content %}
+<h1>Find a room{% if q %} in “{{ q }}”{% endif %}</h1>
+<form class="filters" action="/search" method="get">
+  <input name="q" value="{{ q }}" placeholder="Suburb / city / keyword">
+  <select name="province"><option value="">All provinces</option>
+    {% for p in provinces %}<option {% if p==province %}selected{% endif %}>{{ p }}</option>{% endfor %}</select>
+  <select name="room_type"><option value="">Any type</option>
+    {% for t in room_types %}<option {% if t==room_type %}selected{% endif %}>{{ t }}</option>{% endfor %}</select>
+  <input name="min_price" type="number" min="0" placeholder="Min R" value="{{ min_price }}">
+  <input name="max_price" type="number" min="0" placeholder="Max R" value="{{ max_price }}">
+  <label><input type="checkbox" name="furnished" value="1" {% if furnished %}checked{% endif %}> Furnished</label>
+  <label><input type="checkbox" name="wifi" value="1" {% if wifi %}checked{% endif %}> WiFi</label>
+  <label><input type="checkbox" name="parking" value="1" {% if parking %}checked{% endif %}> Parking</label>
+  <select name="sort">
+    <option value="new" {% if sort=='new' %}selected{% endif %}>Newest</option>
+    <option value="plow" {% if sort=='plow' %}selected{% endif %}>Price: low → high</option>
+    <option value="phigh" {% if sort=='phigh' %}selected{% endif %}>Price: high → low</option>
+  </select>
+  <button class="btn" type="submit">Filter</button>
+</form>
+<p class="resultcount">{{ cards|length }} room{{ 's' if cards|length != 1 }} found</p>
+{% if cards %}
+<div class="grid">{% for r in cards %}{{ ui.card(r) }}{% endfor %}</div>
+{% else %}
+<div class="empty"><p>No rooms match your search. Try:</p>
+<ul><li>A nearby suburb or the city name</li><li>Widening the price range</li><li>Removing some filters</li></ul></div>
+{% endif %}
+{% endblock %}

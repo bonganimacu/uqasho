@@ -1,0 +1,16 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      ADMIN_EMAIL: admin@roomrental.co.za
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
+      SEED_DEMO: "1"
+    volumes:
+      - appdata:/app/data
+      - uploads:/app/uploads
+    restart: unless-stopped
+volumes:
+  appdata:
+  uploads:

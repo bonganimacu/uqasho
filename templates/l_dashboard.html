@@ -1,0 +1,33 @@
+{% extends "base.html" %}{% block title %}Landlord dashboard{% endblock %}
+{% block content %}
+<h1>Landlord dashboard</h1>
+<div class="statgrid">
+  <div class="stat"><b>{{ stats.rooms }}</b><span>Total rooms</span></div>
+  <div class="stat"><b>{{ stats.available }}</b><span>Live listings</span></div>
+  <div class="stat"><b>{{ stats.rented }}</b><span>Rented</span></div>
+  <div class="stat"><b>{{ stats.pending }}</b><span>Pending review</span></div>
+</div>
+<p><a class="btn" href="/l/properties/new">+ Add property</a></p>
+<h2>Your properties</h2>
+{% if props %}
+<table class="table">
+  <tr><th>Name</th><th>Location</th><th>Type</th><th>Rooms</th><th></th></tr>
+  {% for p in props %}<tr>
+    <td>{{ p.name }}</td><td>{{ p.suburb }}, {{ p.city }}</td><td>{{ p.property_type }}</td><td>{{ p.room_count }}</td>
+    <td><a class="btn small" href="/l/properties/{{ p.id }}">Manage</a></td>
+  </tr>{% endfor %}
+</table>
+{% else %}<p class="empty">No properties yet. Add your first property to start listing rooms.</p>{% endif %}
+<h2>Pending viewing requests</h2>
+{% if viewings %}
+<table class="table">
+  <tr><th>Room</th><th>Tenant</th><th>Preferred</th><th></th></tr>
+  {% for v in viewings %}<tr>
+    <td>{{ v.room_name }}</td><td>{{ v.tenant_name }}</td><td>{{ v.preferred_date }} {{ v.preferred_time }}</td>
+    <td><form method="post" action="/l/viewings/{{ v.id }}/action" style="display:inline">
+      <button class="btn small" name="action" value="accept">Accept</button>
+      <button class="btn small ghost" name="action" value="decline">Decline</button></form></td>
+  </tr>{% endfor %}
+</table>
+{% else %}<p class="empty">No pending viewing requests.</p>{% endif %}
+{% endblock %}
